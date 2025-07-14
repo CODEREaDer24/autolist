@@ -4,7 +4,40 @@
 
 {% block content %}
 <h1>Your AI-Generated Listing</h1>
-<img src="{{ image_url }}" alt="Uploaded image" style="max-width: 400px; border: 1px solid #ccc;">
-<pre style="background: #f4f4f4; padding: 10px; white-space: pre-wrap;">{{ listing }}</pre>
-<a href="{{ url_for('upload') }}">Try another</a>
+
+<img src="{{ image_url }}" alt="Uploaded image" style="max-width: 400px; border: 1px solid #ccc; margin-bottom: 20px;">
+
+<!-- Title Section -->
+<h3>Title</h3>
+<div style="display: flex; align-items: center; margin-bottom: 15px;">
+  <input id="title" type="text" value="{{ listing_title }}" readonly style="width: 100%; margin-right: 10px;">
+  <button onclick="copyToClipboard('title')">Copy</button>
+</div>
+
+<!-- Description Section -->
+<h3>Description</h3>
+<div style="display: flex; align-items: center; margin-bottom: 15px;">
+  <textarea id="desc" readonly style="width: 100%; height: 120px; margin-right: 10px;">{{ listing_description }}</textarea>
+  <button onclick="copyToClipboard('desc')">Copy</button>
+</div>
+
+<!-- Price Section -->
+<h3>Suggested Price</h3>
+<div style="display: flex; align-items: center; margin-bottom: 15px;">
+  <input id="price" type="text" value="{{ listing_price }}" readonly style="width: 100%; margin-right: 10px;">
+  <button onclick="copyToClipboard('price')">Copy</button>
+</div>
+
+<!-- Restart Option -->
+<a href="{{ url_for('upload') }}"><button>Upload Another Photo</button></a>
+
+<!-- Copy Script -->
+<script>
+function copyToClipboard(id) {
+  var element = document.getElementById(id);
+  element.select();
+  element.setSelectionRange(0, 99999); // Mobile support
+  document.execCommand("copy");
+}
+</script>
 {% endblock %}
