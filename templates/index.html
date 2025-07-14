@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Autolister Home{% endblock %}
+{% block title %}Welcome to Autolister{% endblock %}
 
 {% block content %}
-<h1>Welcome to Autolister AI</h1>
-<p>This is your dashboard. Choose a function above.</p>
+<h1 style="margin-top: 0;">Autolister AI</h1>
+<p>Upload a product photo and get a ready-to-use listing, AI-generated in seconds.</p>
+<a href="{{ url_for('upload') }}">
+  <button>Try It Now</button>
+</a>
 {% endblock %}
