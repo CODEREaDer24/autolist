@@ -2,6 +2,7 @@
 # SECTION 1: Setup & Imports
 # ─────────────────────────────
 import os
+import base64
 import openai
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
@@ -22,7 +23,7 @@ def home():
 
 @app.route("/listings")
 def listings():
-    return render_template("listings.html")
+    return redirect(url_for('upload'))
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
@@ -36,23 +37,41 @@ def upload():
         path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(path)
 
-        # Send image to OpenAI
+        # Convert image to base64
         with open(path, "rb") as img:
-            response = openai.chat.completions.create(
-                model="gpt-4-vision-preview",
-                messages=[
-                    {"role": "user", "content": [
-                        {"type": "text", "text": "Describe this item like a Kijiji listing, including a title, description, and suggested price."},
-                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{img.read().encode('base64').decode()}" }}
-                    ]}
-                ],
-                max_tokens=300
-            )
+            base64_image = base64.b64encode(img.read()).decode("utf-8")
 
-        listing = response.choices[0].message.content
-        return render_template("result.html", listing=listing, image_url=url_for('static', filename=f'uploads/{filename}'))
+        # Send to OpenAI Vision
+        response = openai.chat.completions.create(
+            model="gpt-4-vision-preview",
+            messages=[
+                {"role": "user", "content": [
+                    {"type": "text", "text": "Describe this item like a Kijiji listing. Return ONLY the following:\n\nTitle:\nDescription:\nPrice:"},
+                    {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
+                ]}
+            ],
+            max_tokens=300
+        )
+
+        content = response.choices[0].message.content
+        title = extract_between(content, "Title:", "Description:")
+        description = extract_between(content, "Description:", "Price:")
+        price = content.split("Price:")[-1].strip()
+
+        return render_template("result.html",
+                               listing_title=title.strip(),
+                               listing_description=description.strip(),
+                               listing_price=price.strip(),
+                               image_url=url_for('static', filename=f'uploads/{filename}'))
 
     return render_template("upload.html")
+
+# Helper function
+def extract_between(text, start, end):
+    try:
+        return text.split(start)[1].split(end)[0]
+    except:
+        return ""
 
 # ─────────────────────────────
 # SECTION 3: App Entry Point
