@@ -40,14 +40,7 @@ def upload():
                             "content": [
                                 {
                                     "type": "text",
-                                    "text": (
-                                        "You're a professional appraiser for online resale listings. "
-                                        "Describe the *primary item* in this photo as if for eBay or Facebook Marketplace. "
-                                        "1. A short, clear title (max 10 words). "
-                                        "2. A two-sentence description that includes condition and use-case. "
-                                        "3. A realistic price estimate in USD. "
-                                        "If the item is unclear or too generic, say 'Unknown'."
-                                    )
+                                    "text": "Identify the main item in this image for resale. Give a one-line title, a two-sentence description, and a fair estimated price in USD."
                                 },
                                 {
                                     "type": "image_url",
@@ -56,8 +49,8 @@ def upload():
                             ]
                         }
                     ],
-                    max_tokens=400,
-                    temperature=0.3
+                    max_tokens=300,
+                    temperature=0.7
                 )
 
             content = response.choices[0].message.content or ""
@@ -78,8 +71,7 @@ def upload():
 def clipboard():
     return render_template('clipboard.html')
 
+# Use correct port binding for Render
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port, debug=True)
-
-    
