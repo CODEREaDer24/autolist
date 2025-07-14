@@ -1,45 +1,40 @@
 {% extends "base.html" %}
-
 {% block title %}Generated Listing{% endblock %}
 
 {% block content %}
 <h1>Your AI-Generated Listing</h1>
-
-<!-- Image Preview -->
 <img src="{{ image_url }}" alt="Uploaded image">
-
-<!-- Title Section -->
 <h3>Title</h3>
 <div class="copy-block">
   <input id="title" type="text" value="{{ listing_title }}" readonly>
   <button onclick="copyToClipboard('title')">Copy</button>
 </div>
-
-<!-- Description Section -->
 <h3>Description</h3>
 <div class="copy-block">
   <textarea id="desc" readonly rows="6">{{ listing_description }}</textarea>
   <button onclick="copyToClipboard('desc')">Copy</button>
 </div>
-
-<!-- Price Section -->
 <h3>Suggested Price</h3>
 <div class="copy-block">
   <input id="price" type="text" value="{{ listing_price }}" readonly>
   <button onclick="copyToClipboard('price')">Copy</button>
 </div>
-
-<!-- Upload Another -->
 <a href="{{ url_for('upload') }}"><button>Upload Another Photo</button></a>
 
-<!-- Copy Script -->
 <script>
 function copyToClipboard(id) {
-  var el = document.getElementById(id);
-  el.select ? el.select() : el.setSelectionRange(0, 99999); // support textarea
+  const el = document.getElementById(id);
+  if (el.select) {
+    el.select();
+  } else {
+    const range = document.createRange();
+    range.selectNode(el);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  }
   navigator.clipboard.writeText(el.value || el.innerText)
-    .then(() => console.log('Copied: ' + (el.value || el.innerText)))
-    .catch(err => alert('Failed to copy'));
+    .then(() => alert('Copied!'))
+    .catch(() => alert('Failed to copy.'));
 }
 </script>
 {% endblock %}
