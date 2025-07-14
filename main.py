@@ -2,8 +2,6 @@ from flask import Flask, request, render_template, redirect, url_for, session
 import base64
 import openai
 import os
-from io import BytesIO
-from PIL import Image
 import uuid
 
 app = Flask(__name__)
@@ -29,16 +27,21 @@ def upload():
     image.save(path)
     image_url = f"/{path}"
 
-    # Encode for OpenAI
+    # Rewind file before encoding
+    image.seek(0)
     content_type = image.content_type
     encoded = base64.b64encode(image.read()).decode("utf-8")
     data_url = f"data:{content_type};base64,{encoded}"
 
-    # Prompt for better AI description
+    # Multi-item prompt for segmentation-style result
     prompt = (
-        "You're a witty secondhand item copywriter. Describe everything you can see in this image "
-        "as if you’re writing a Facebook Marketplace listing. Be detailed, specific, and add a little character. "
-        "Include a title, a clear description, and a suggested price."
+        "You're an expert at writing resale listings. Look at the image and identify each distinct item. "
+        "For each one, write:\n\n"
+        "- A title\n"
+        "- A short but vivid description\n"
+        "- A suggested price\n\n"
+        "Label them as Item 1, Item 2, etc. Make sure they are listed clearly and separately. "
+        "This image may contain many different objects — treat each as a separate listing."
     )
 
     response = openai.chat.completions.create(
@@ -51,29 +54,15 @@ def upload():
         ],
     )
 
-    content = response.choices[0].message.content
+    content = response.choices[0].message.content.strip()
 
-    # Parse result
-    title = content.split("\n")[0].replace("Title:", "").strip()
-    description = ""
-    price = ""
-
-    for line in content.split("\n")[1:]:
-        if line.lower().startswith("description:"):
-            description = line.replace("Description:", "").strip()
-        elif line.lower().startswith("price:") or line.lower().startswith("suggested price:"):
-            price = line.replace("Price:", "").replace("Suggested Price:", "").strip()
-        else:
-            description += " " + line.strip()
-
-    # Add to session clipboard
+    # Save response to clipboard
     history = session.get("history", [])
-    history.insert(0, {"title": title, "description": description, "price": price})
+    history.insert(0, {"title": "Multi-item analysis", "description": content, "price": "N/A"})
     session["history"] = history[:10]
 
-    # Render HTML first (so image still loads), then delete file
-    rendered_page = render_template("result.html", image_url=image_url, title=title, description=description, price=price)
-
+    # Render and delete image
+    rendered_page = render_template("result.html", image_url=image_url, title="Multiple Items", description=content, price="See listings above")
     try:
         os.remove(path)
     except Exception as e:
