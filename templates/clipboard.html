@@ -3,26 +3,17 @@
 {% block title %}Clipboard++{% endblock %}
 
 {% block content %}
+
 <h1>Clipboard++</h1>
-<p>This is your smart clipboard workspace. You can copy all your listing info here, tweak it, and paste it wherever.</p>
-
-<div class="clipboard-container">
+<p>This is your smart clipboard workspace. You can copy all your listing info here, tweak it, and paste it wherever.</p><div class="clipboard-container">
   <h3>Title</h3>
-  <textarea id="title" rows="2" placeholder="Paste or edit your title here..."></textarea>
-
-  <h3>Description</h3>
-  <textarea id="description" rows="6" placeholder="Paste or edit your description here..."></textarea>
-
-  <h3>Price</h3>
-  <input type="text" id="price" placeholder="Paste or edit your price here..." />
-
-  <div class="button-row">
+  <textarea id="title" rows="2" placeholder="Paste or edit your title here..."></textarea>  <h3>Description</h3>
+  <textarea id="description" rows="6" placeholder="Paste or edit your description here..."></textarea>  <h3>Price</h3>
+  <input type="text" id="price" placeholder="Paste or edit your price here..." />  <div class="button-row">
     <button onclick="copyAll()">Copy All</button>
     <button onclick="clearAll()">Clear</button>
   </div>
-</div>
-
-<script>
+</div><script>
 function copyAll() {
   const title = document.getElementById("title").value.trim();
   const description = document.getElementById("description").value.trim();
@@ -41,9 +32,7 @@ function clearAll() {
   document.getElementById("description").value = "";
   document.getElementById("price").value = "";
 }
-</script>
-
-<style>
+</script><style>
 .clipboard-container {
   max-width: 600px;
   margin: auto;
@@ -76,5 +65,5 @@ button {
 button:hover {
   background: #0056b3;
 }
-</style>
-{% endblock %}
+</style>{% endblock %}
+
