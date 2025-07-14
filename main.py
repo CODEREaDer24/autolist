@@ -40,7 +40,14 @@ def upload():
                             "content": [
                                 {
                                     "type": "text",
-                                    "text": "Identify the main item in this image for resale. Give a one-line title, a two-sentence description, and a fair estimated price in USD."
+                                    "text": (
+                                        "You're a professional appraiser for online resale listings. "
+                                        "Describe the *primary item* in this photo as if for eBay or Facebook Marketplace. "
+                                        "1. A short, clear title (max 10 words). "
+                                        "2. A two-sentence description that includes condition and use-case. "
+                                        "3. A realistic price estimate in USD. "
+                                        "If the item is unclear or too generic, say 'Unknown'."
+                                    )
                                 },
                                 {
                                     "type": "image_url",
@@ -49,8 +56,8 @@ def upload():
                             ]
                         }
                     ],
-                    max_tokens=300,
-                    temperature=0.7
+                    max_tokens=400,
+                    temperature=0.3
                 )
 
             content = response.choices[0].message.content or ""
