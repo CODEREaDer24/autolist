@@ -41,9 +41,9 @@ def upload():
         with open(path, "rb") as img:
             base64_image = base64.b64encode(img.read()).decode("utf-8")
 
-        # Send to OpenAI Vision
+        # Call OpenAI Vision
         response = openai.chat.completions.create(
-            model="gpt-4-vision-preview",
+            model="gpt-4o",
             messages=[
                 {"role": "user", "content": [
                     {"type": "text", "text": "Describe this item like a Kijiji listing. Return ONLY the following:\n\nTitle:\nDescription:\nPrice:"},
