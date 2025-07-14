@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PriceAndPost – Results</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
-      padding: 2rem;
       font-family: 'Outfit', sans-serif;
+      margin: 0;
       background: #f3f4f7;
       color: #111;
+      padding: 2rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -25,49 +25,44 @@
     }
 
     .preview-img {
-      width: 100%;
       max-width: 400px;
-      height: auto;
+      width: 100%;
       border-radius: 12px;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
       margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .output-section {
+    .card {
       background: white;
       width: 100%;
       max-width: 700px;
-      padding: 1.5rem 2rem;
-      border-radius: 16px;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
       margin-bottom: 1.5rem;
       position: relative;
     }
 
-    .output-label {
-      font-weight: 600;
-      font-size: 1.1rem;
+    .card h3 {
+      margin-top: 0;
       margin-bottom: 0.5rem;
-      color: #555;
     }
 
-    .output-content {
-      font-size: 1.2rem;
-      line-height: 1.5;
+    .card p {
+      margin: 0.4rem 0;
     }
 
     .copy-btn {
       position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
+      top: 1.2rem;
+      right: 1.2rem;
       background: #4f46e5;
       color: white;
       border: none;
       padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
       border-radius: 6px;
-      font-size: 0.9rem;
       cursor: pointer;
-      transition: background 0.2s ease;
     }
 
     .copy-btn:hover {
@@ -83,23 +78,23 @@
     <img class="preview-img" src="{{ image_url }}" alt="Uploaded Item" />
   {% endif %}
 
-  <div class="output-section">
-    <div class="output-label">Title</div>
-    <div class="output-content" id="title">{{ title }}</div>
-    <button class="copy-btn" onclick="copyToClipboard('title')">Copy</button>
-  </div>
+  {% set items = description.split("Item ") %}
 
-  <div class="output-section">
-    <div class="output-label">Description</div>
-    <div class="output-content" id="description">{{ description }}</div>
-    <button class="copy-btn" onclick="copyToClipboard('description')">Copy</button>
-  </div>
-
-  <div class="output-section">
-    <div class="output-label">Suggested Price</div>
-    <div class="output-content" id="price">{{ price }}</div>
-    <button class="copy-btn" onclick="copyToClipboard('price')">Copy</button>
-  </div>
+  {% for item in items %}
+    {% if item.strip() %}
+      <div class="card">
+        {% set content = item.strip().split('\n') %}
+        <h3>{{ content[0] | trim }}</h3>
+        {% for line in content[1:] %}
+          <p>{{ line }}</p>
+        {% endfor %}
+        <button class="copy-btn" onclick="copyToClipboard('item-{{ loop.index }}')">Copy</button>
+        <div id="item-{{ loop.index }}" style="display:none;">
+          {{ item.strip() }}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
 
   <script>
     function copyToClipboard(id) {
