@@ -30,7 +30,7 @@ def upload():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
 
-            # OpenAI Vision API
+            # OpenAI Vision Prompt
             with open(filepath, "rb") as image_file:
                 response = client.chat.completions.create(
                     model="gpt-4o",
@@ -40,7 +40,7 @@ def upload():
                             "content": [
                                 {
                                     "type": "text",
-                                    "text": "Identify and describe the item(s) in this image as if for a sales listing. Be specific and include a fair price estimate."
+                                    "text": "Identify the main item in this image for resale. Give a one-line title, a two-sentence description, and a fair estimated price in USD."
                                 },
                                 {
                                     "type": "image_url",
@@ -54,15 +54,15 @@ def upload():
                 )
 
             content = response.choices[0].message.content or ""
-            lines = content.strip().split('\n')
-            title = lines[0] if len(lines) > 0 else ""
-            description = lines[1] if len(lines) > 1 else ""
-            price = lines[2] if len(lines) > 2 else ""
+            lines = [line.strip() for line in content.strip().split('\n') if line.strip()]
+            title = lines[0] if len(lines) > 0 else "Untitled"
+            description = lines[1] if len(lines) > 1 else "No description available."
+            price = lines[2] if len(lines) > 2 else "N/A"
 
             return render_template("listing.html",
-                                   listing_title=title.strip(),
-                                   listing_description=description.strip(),
-                                   listing_price=price.strip(),
+                                   listing_title=title,
+                                   listing_description=description,
+                                   listing_price=price,
                                    image_url=url_for('static', filename=f'uploads/{filename}'))
 
     return render_template('upload.html')
