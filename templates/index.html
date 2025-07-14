@@ -1,58 +1,38 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>PriceAndPost</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom right, #0d0d2b, #1e90ff);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-    }h1 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-}
-
-.snap-button {
-  background: #00ffcc;
-  border: none;
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #000;
-  box-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
-  cursor: pointer;
-  transition: transform 0.2s ease, background 0.3s ease;
-}
-
-.snap-button:hover {
-  transform: scale(1.1);
-  background: #00e6b8;
-}
-
-.subtext {
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
-
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-  <h1>PriceAndPost</h1>
-  <form action="/upload" method="get">
-    <button class="snap-button" type="submit">Snap Photo</button>
+
+  <h1>Welcome to PriceAndPost</h1>
+  <p>Choose how you'd like to submit your image:</p>
+
+  <!-- Snap a Picture (mobile camera) -->
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" capture="environment" id="snapInput" style="display: none;" />
+    <button type="button" onclick="document.getElementById('snapInput').click()">📸 Snap a Picture</button>
   </form>
-  <div class="subtext">Instant price & post generator. Built for speed.</div>
+
+  <br>
+
+  <!-- Upload from Device (desktop or gallery) -->
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" id="uploadInput" style="display: none;" />
+    <button type="button" onclick="document.getElementById('uploadInput').click()">🖼️ Upload Image</button>
+  </form>
+
+  <script>
+    document.getElementById('snapInput').addEventListener('change', function () {
+      this.form.submit();
+    });
+
+    document.getElementById('uploadInput').addEventListener('change', function () {
+      this.form.submit();
+    });
+  </script>
+
 </body>
 </html>
