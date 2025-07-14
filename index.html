@@ -1,1 +1,96 @@
-<!DOCTYPE html><html><head><title>Autolister AI</title></head><body><h1>Welcome to Autolister AI</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AutoLister AI - Snap. Price. Post.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main {
+            margin-top: 40px;
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            background: #f0f0f0;
+        }
+
+        input[type="submit"] {
+            background-color: #3498db;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AutoLister AI</h1>
+        <p>Snap a photo. Get a listing. Done.</p>
+    </header>
+
+    <main>
+        <h2>Upload Your Item</h2>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <input type="submit" value="Generate Listing">
+        </form>
+    </main>
+
+    <footer>
+        &copy; 2025 PriceAndPost / AutoLister AI
+    </footer>
+</body>
+</html>
