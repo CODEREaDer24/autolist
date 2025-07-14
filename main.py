@@ -1,9 +1,16 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for, session
 import base64
 import openai
 import os
+from io import BytesIO
+from PIL import Image
+import uuid
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "devsecret")
+
+UPLOAD_FOLDER = "static/uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route("/")
 def index():
@@ -15,26 +22,62 @@ def upload():
     if not image:
         return "No image uploaded", 400
 
-    content_type = image.content_type  # e.g. 'image/jpeg'
+    # Save image locally with unique name
+    ext = image.filename.split('.')[-1]
+    image_id = str(uuid.uuid4()) + "." + ext
+    path = os.path.join(UPLOAD_FOLDER, image_id)
+    image.save(path)
+    image_url = f"/{path}"
+
+    # Encode image for OpenAI
+    content_type = image.content_type
     encoded = base64.b64encode(image.read()).decode("utf-8")
     data_url = f"data:{content_type};base64,{encoded}"
+
+    # AI prompt
+    prompt = (
+        "You're a witty secondhand item copywriter. Describe everything you can see in this image "
+        "as if you’re writing a Facebook Marketplace listing. Be detailed, specific, and add a little character. "
+        "Include a title, a clear description, and a suggested price."
+    )
 
     response = openai.chat.completions.create(
         model="gpt-4o",
         messages=[
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": "Analyze this image."},
-                    {"type": "image_url", "image_url": {"url": data_url}},
-                ],
-            }
+            {"role": "user", "content": [
+                {"type": "text", "text": prompt},
+                {"type": "image_url", "image_url": {"url": data_url}}
+            ]}
         ],
     )
 
-    return response.choices[0].message.content
+    content = response.choices[0].message.content
 
-# 🔥 Required by Render
+    # Parse response (very loosely)
+    title = content.split("\n")[0].replace("Title:", "").strip()
+    description = ""
+    price = ""
+
+    for line in content.split("\n")[1:]:
+        if line.lower().startswith("description:"):
+            description = line.replace("Description:", "").strip()
+        elif line.lower().startswith("price:") or line.lower().startswith("suggested price:"):
+            price = line.replace("Price:", "").replace("Suggested Price:", "").strip()
+        else:
+            description += " " + line.strip()
+
+    # Save to session clipboard
+    history = session.get("history", [])
+    history.insert(0, {"title": title, "description": description, "price": price})
+    session["history"] = history[:10]  # Keep only the last 10
+
+    return render_template("result.html", image_url=image_url, title=title, description=description, price=price)
+
+@app.route("/clipboard")
+def clipboard():
+    history = session.get("history", [])
+    return render_template("clipboard.html", history=history)
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
