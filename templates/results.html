@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}Generated Listing{% endblock %}
+
+{% block content %}
+<h1>Your AI-Generated Listing</h1>
+<img src="{{ image_url }}" alt="Uploaded image" style="max-width: 400px; border: 1px solid #ccc;">
+<pre style="background: #f4f4f4; padding: 10px; white-space: pre-wrap;">{{ listing }}</pre>
+<a href="{{ url_for('upload') }}">Try another</a>
+{% endblock %}
