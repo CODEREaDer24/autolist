@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Listing Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 1rem;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .image-preview {
+      max-width: 300px;
+      width: 100%;
+      margin-bottom: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .listing-field {
+      width: 100%;
+      max-width: 500px;
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    }
+
+    .listing-field label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    button.copy-btn {
+      background: #007bff;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    button.copy-btn:hover {
+      background: #0056b3;
+    }
+
+    .teaser {
+      text-align: center;
+      margin-top: 2rem;
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    .teaser a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .teaser a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Listing</h1>
+
+  <img src="{{ image_url }}" alt="Uploaded Image" class="image-preview"/>
+
+  <div class="listing-field">
+    <label for="title">Title</label>
+    <input id="title" type="text" value="{{ listing_title }}" readonly>
+    <button class="copy-btn" onclick="copyText('title')">Copy</button>
+  </div>
+
+  <div class="listing-field">
+    <label for="desc">Description</label>
+    <textarea id="desc" rows="4" readonly>{{ listing_description }}</textarea>
+    <button class="copy-btn" onclick="copyText('desc')">Copy</button>
+  </div>
+
+  <div class="listing-field">
+    <label for="price">Suggested Price</label>
+    <input id="price" type="text" value="{{ listing_price }}" readonly>
+    <button class="copy-btn" onclick="copyText('price')">Copy</button>
+  </div>
+
+  <div class="teaser">
+    Wish you could copy all three at once?<br>
+    <a href="/clipboard">Clipboard++ is coming.</a>
+  </div>
+
+  <script>
+    function copyText(id) {
+      const el = document.getElementById(id);
+      el.select();
+      el.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(el.value || el.innerText)
+        .then(() => alert("Copied!"))
+        .catch(() => alert("Failed to copy."));
+    }
+  </script>
+</body>
+</html>
