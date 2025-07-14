@@ -1,14 +1,46 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>{% block title %}Autolister{% endblock %}</title>
+    <meta charset="UTF-8">
+    <title>{% block title %}Autolister AI{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        nav {
+            background-color: #222;
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
     <nav>
-        <a href="{{ url_for('home') }}">Home</a> |
-        <a href="{{ url_for('listings') }}">Listings</a>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('upload') }}">Upload Photo</a>
     </nav>
-    <div class="content">
+
+    <div class="container">
         {% block content %}{% endblock %}
     </div>
 </body>
