@@ -22,19 +22,19 @@ def upload():
     if not image:
         return "No image uploaded", 400
 
-    # Save image locally with unique name
+    # Save uploaded image temporarily
     ext = image.filename.split('.')[-1]
     image_id = str(uuid.uuid4()) + "." + ext
     path = os.path.join(UPLOAD_FOLDER, image_id)
     image.save(path)
     image_url = f"/{path}"
 
-    # Encode image for OpenAI
+    # Encode for OpenAI
     content_type = image.content_type
     encoded = base64.b64encode(image.read()).decode("utf-8")
     data_url = f"data:{content_type};base64,{encoded}"
 
-    # AI prompt
+    # Prompt for better AI description
     prompt = (
         "You're a witty secondhand item copywriter. Describe everything you can see in this image "
         "as if you’re writing a Facebook Marketplace listing. Be detailed, specific, and add a little character. "
@@ -53,7 +53,7 @@ def upload():
 
     content = response.choices[0].message.content
 
-    # Parse response (very loosely)
+    # Parse result
     title = content.split("\n")[0].replace("Title:", "").strip()
     description = ""
     price = ""
@@ -66,12 +66,20 @@ def upload():
         else:
             description += " " + line.strip()
 
-    # Save to session clipboard
+    # Add to session clipboard
     history = session.get("history", [])
     history.insert(0, {"title": title, "description": description, "price": price})
-    session["history"] = history[:10]  # Keep only the last 10
+    session["history"] = history[:10]
 
-    return render_template("result.html", image_url=image_url, title=title, description=description, price=price)
+    # Render HTML first (so image still loads), then delete file
+    rendered_page = render_template("result.html", image_url=image_url, title=title, description=description, price=price)
+
+    try:
+        os.remove(path)
+    except Exception as e:
+        print(f"Failed to delete image: {e}")
+
+    return rendered_page
 
 @app.route("/clipboard")
 def clipboard():
