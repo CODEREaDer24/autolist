@@ -1,63 +1,107 @@
-<!DOCTYPE html>
-<html>
+<!-- File: result.html --><!DOCTYPE html><html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>AutoLister AI - Listing Result</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            padding: 20px;
-            background: #f4f4f4;
-            text-align: center;
-        }
-
-        img {
-            max-width: 300px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            color: #2c3e50;
-        }
-
-        pre {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            text-align: left;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-        }
-
-        a:hover {
-            background: #2980b9;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Result - PriceAndPost</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: 'Outfit', sans-serif;
+      background: #f6f9fc;
+      color: #111;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+    .image-preview {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+    }
+    .output-block {
+      margin-bottom: 1.5rem;
+    }
+    .output-label {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .output-content {
+      font-size: 1.125rem;
+      background: #f1f5f9;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .copy-btn i {
+      color: #475569;
+    }
+    .branding {
+      text-align: center;
+      margin-top: 2rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #5b21b6;
+    }
+  </style>
 </head>
 <body>
-    <h1>Your Uploaded Item</h1>
-    <img src="{{ url_for('uploaded_file', filename=image_path) }}" alt="Uploaded Item Image">
-    
-    {% if ai_output %}
-        <h2>Listing Suggestion</h2>
-        <pre>{{ ai_output }}</pre>
-    {% else %}
-        <p>Unable to generate listing. Try again.</p>
-    {% endif %}
+  <div class="container">
+    <img src="{{ image_url }}" alt="Uploaded Item" class="image-preview"><div class="output-block">
+  <div class="output-label">Title</div>
+  <div class="output-content" id="title">{{ title }}
+    <button class="copy-btn" onclick="copyToClipboard('title')">
+      <i data-lucide="copy"></i>
+    </button>
+  </div>
+</div>
 
-    <a href="/">Upload Another</a>
-</body>
+<div class="output-block">
+  <div class="output-label">Description</div>
+  <div class="output-content" id="description">{{ description }}
+    <button class="copy-btn" onclick="copyToClipboard('description')">
+      <i data-lucide="copy"></i>
+    </button>
+  </div>
+</div>
+
+<div class="output-block">
+  <div class="output-label">Price</div>
+  <div class="output-content" id="price">{{ price }}
+    <button class="copy-btn" onclick="copyToClipboard('price')">
+      <i data-lucide="copy"></i>
+    </button>
+  </div>
+</div>
+
+  </div>  <div class="branding">Powered by PriceAndPost ✨</div>  <script>
+    lucide.createIcons();
+    function copyToClipboard(id) {
+      const text = document.getElementById(id).innerText.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        alert(`${id.charAt(0).toUpperCase() + id.slice(1)} copied to clipboard!`);
+      });
+    }
+  </script></body>
 </html>
