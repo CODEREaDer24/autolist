@@ -2,106 +2,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Result - PriceAndPost</title>
+  <title>Results - PriceAndPost</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #f0f4f8;
       margin: 0;
       padding: 2rem;
-      font-family: 'Outfit', sans-serif;
-      background: #f6f9fc;
-      color: #111;
     }
     .container {
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
-      background: white;
+      background: #fff;
       padding: 2rem;
-      border-radius: 20px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
     }
     .image-preview {
-      width: 100%;
-      border-radius: 12px;
+      text-align: center;
       margin-bottom: 2rem;
     }
-    h2 {
-      font-size: 1.75rem;
-      margin-bottom: 1rem;
+    .image-preview img {
+      max-width: 100%;
+      border-radius: 1rem;
     }
-    .output-block {
+    .result-card {
+      background: #f9fbfd;
+      border-left: 6px solid #4f46e5;
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
       margin-bottom: 1.5rem;
     }
-    .output-label {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    .output-content {
-      font-size: 1.125rem;
-      background: #f1f5f9;
-      padding: 0.75rem 1rem;
-      border-radius: 10px;
-      position: relative;
+    .result-card h2 {
+      margin: 0.25rem 0;
     }
     .copy-btn {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
+      background: #e0e7ff;
       border: none;
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.6rem;
       cursor: pointer;
+      font-size: 0.85rem;
+      margin-left: 0.5rem;
     }
-    .copy-btn i {
-      color: #475569;
-    }
-    .branding {
-      text-align: center;
-      margin-top: 2rem;
-      font-weight: 700;
-      font-size: 1.25rem;
-      color: #5b21b6;
+    .copy-btn:hover {
+      background: #c7d2fe;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="{{ image_url }}" alt="Uploaded Item" class="image-preview"><div class="output-block">
-  <div class="output-label">Title</div>
-  <div class="output-content" id="title">{{ title }}
-    <button class="copy-btn" onclick="copyToClipboard('title')">
-      <i data-lucide="copy"></i>
-    </button>
+    <h1>Generated Listings</h1>
+    <div class="image-preview">
+      <img src="{{ image_url }}" alt="Uploaded">
+    </div>
+    {% for item in items %}
+    <div class="result-card">
+      <h2>Title: {{ item.title }}
+        <button class="copy-btn" onclick="copyText('{{ item.title }}')">Copy</button>
+      </h2>
+      <p>Description: {{ item.description }}
+        <button class="copy-btn" onclick="copyText('{{ item.description }}')">Copy</button>
+      </p>
+      <p>Price: {{ item.price }}
+        <button class="copy-btn" onclick="copyText('{{ item.price }}')">Copy</button>
+      </p>
+    </div>
+    {% endfor %}
   </div>
-</div>
-
-<div class="output-block">
-  <div class="output-label">Description</div>
-  <div class="output-content" id="description">{{ description }}
-    <button class="copy-btn" onclick="copyToClipboard('description')">
-      <i data-lucide="copy"></i>
-    </button>
-  </div>
-</div>
-
-<div class="output-block">
-  <div class="output-label">Price</div>
-  <div class="output-content" id="price">{{ price }}
-    <button class="copy-btn" onclick="copyToClipboard('price')">
-      <i data-lucide="copy"></i>
-    </button>
-  </div>
-</div>
-
-  </div>  <div class="branding">Powered by PriceAndPost ✨</div>  <script>
+  <script>
     lucide.createIcons();
-    function copyToClipboard(id) {
-      const text = document.getElementById(id).innerText.trim();
-      navigator.clipboard.writeText(text).then(() => {
-        alert(`${id.charAt(0).toUpperCase() + id.slice(1)} copied to clipboard!`);
-      });
+    function copyText(text) {
+      navigator.clipboard.writeText(text);
     }
-  </script></body>
+  </script>
+</body>
 </html>
