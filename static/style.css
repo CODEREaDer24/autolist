@@ -44,6 +44,16 @@ form {
   gap: 1rem;
 }
 
+.action-button input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+
 .action-button {
   background: #007bff;
   color: white;
@@ -53,24 +63,14 @@ form {
   font-weight: bold;
   cursor: pointer;
   transition: background 0.3s ease;
-  display: block;
   position: relative;
+  display: block;
+  margin-bottom: 1rem;
   text-align: center;
-  overflow: hidden;
 }
 
 .action-button:hover {
   background: #0056b3;
-}
-
-.action-button input[type="file"] {
-  position: absolute;
-  opacity: 0;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  cursor: pointer;
 }
 
 .submit-button {
