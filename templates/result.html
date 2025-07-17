@@ -39,6 +39,13 @@
     </div>
 
     <a href="{{ url_for('index') }}" class="back-button">🔁 Start Over</a>
+
+    {% if raw_output %}
+    <div class="result-field" style="margin-top: 2rem;">
+      <label>🧠 Raw GPT Output (Debug)</label>
+      <pre style="background:#f5f5f5; padding:1rem; border-radius:0.5rem; white-space:pre-wrap;">{{ raw_output }}</pre>
+    </div>
+    {% endif %}
   </div>
 
   <script>
