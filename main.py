@@ -44,7 +44,7 @@ def upload_file():
     description = "Vintage Nike inline skates with aluminum frames and 76mm wheels. Great for collectors or skaters who want solid retro gear."
     price = "$85 CAD"
 
-    return render_template('results.html',
+    return render_template('result.html',
                            image_filename=unique_name,
                            title=title,
                            description=description,
