@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PriceAndPost</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PriceAndPost</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="container">
-    <h1>📸 PriceAndPost</h1>
-    <p class="tagline">Snap or upload an item to generate a resale listing instantly.</p>
+    <div class="container">
+        <h1>📸 PriceAndPost</h1>
+        <p class="tagline">Snap or upload an item to generate a resale listing instantly.</p>
 
-    <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-      <label class="action-button">
-        📷 Snap a Picture
-        <input type="file" name="image" accept="image/*" capture="environment" required>
-      </label>
+        <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+            
+            <label class="action-button">
+                📷 Snap a Picture
+                <input type="file" name="image" accept="image/*" capture="environment" required />
+            </label>
+            
+            <label class="action-button">
+                ⬆️ Upload an Image
+                <input type="file" name="image" accept="image/*" required />
+            </label>
+            
+            <button type="submit" class="submit-button">🚀 Generate Listing</button>
+        </form>
 
-      <label class="action-button">
-        ⬆️ Upload an Image
-        <input type="file" name="image" accept="image/*" required>
-      </label>
-
-      <button type="submit" class="submit-button">🚀 Generate Listing</button>
-    </form>
-
-    <footer>
-      <p class="footer-note">Built with 💡 by PriceAndPost</p>
-    </footer>
-  </div>
+        <footer>
+            <p class="footer-note">Built with 💡 by PriceAndPost</p>
+        </footer>
+    </div>
 </body>
 </html>
