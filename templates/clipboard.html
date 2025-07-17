@@ -1,105 +1,116 @@
-<!-- File: clipboard.html --><!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clipboard History - PriceAndPost</title>
+  <title>Clipboard++ | PriceAndPost</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Outfit', sans-serif;
-      background-color: #f1f5f9;
-      margin: 0;
+      background: #0f172a;
+      color: #f8fafc;
       padding: 2rem;
     }
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: #ffffff;
-      padding: 2rem;
-      border-radius: 1.5rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    }
+
     h1 {
+      font-size: 2rem;
       margin-bottom: 1.5rem;
+      color: #facc15;
     }
+
     .entry {
-      background: #f9fafb;
+      background: #1e293b;
       padding: 1rem;
-      border-radius: 1rem;
+      border-radius: 10px;
       margin-bottom: 1rem;
-      border-left: 4px solid #6366f1;
+      position: relative;
     }
+
     .entry pre {
       white-space: pre-wrap;
-      word-break: break-word;
+      word-wrap: break-word;
     }
-    .btns {
-      margin-top: 1rem;
+
+    .actions {
+      margin-top: 0.5rem;
     }
-    button {
-      background-color: #6366f1;
-      color: white;
+
+    .btn {
+      background: #38bdf8;
       border: none;
-      border-radius: 0.5rem;
-      padding: 0.4rem 0.8rem;
+      color: #0f172a;
+      font-weight: bold;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
       cursor: pointer;
       margin-right: 0.5rem;
+      transition: background 0.2s;
     }
-    button:hover {
-      background-color: #4f46e5;
+
+    .btn:hover {
+      background: #0ea5e9;
+    }
+
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      opacity: 0.7;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Clipboard++ History</h1>
-    <div id="clipboard-entries"></div>
-    <div class="btns">
-      <button onclick="downloadClipboard()">Download</button>
-      <button onclick="clearClipboard()">Clear</button>
-    </div>
-  </div>  <script>
-    const clipboardKey = 'priceandpost_clipboard';
 
-    function getClipboard() {
-      const data = localStorage.getItem(clipboardKey);
-      return data ? JSON.parse(data) : [];
-    }
+  <h1>🧾 Clipboard++</h1>
+  <div id="clipboardContainer"></div>
 
-    function renderClipboard() {
-      const entries = getClipboard();
-      const container = document.getElementById('clipboard-entries');
-      container.innerHTML = '';
-      entries.forEach((entry, index) => {
+  <div class="footer">
+    <a href="{{ url_for('index') }}" style="color:#38bdf8;">← Back to Upload</a>
+  </div>
+
+  <script>
+    function loadClipboard() {
+      const container = document.getElementById('clipboardContainer');
+      const entries = JSON.parse(localStorage.getItem('priceandpost_clipboard') || '[]');
+
+      if (entries.length === 0) {
+        container.innerHTML = "<p>No saved results yet.</p>";
+        return;
+      }
+
+      entries.forEach((entry, i) => {
         const div = document.createElement('div');
         div.className = 'entry';
-        div.innerHTML = `<pre>${entry}</pre><button onclick="copyEntry(${index})">Copy</button>`;container.appendChild(div);
-  });
-}
+        div.innerHTML = `
+          <pre>${entry}</pre>
+          <div class="actions">
+            <button class="btn" onclick="copyToClipboard(${i})">Copy</button>
+            <button class="btn" onclick="download(${i})">Download</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
 
-function copyEntry(index) {
-  const entries = getClipboard();
-  navigator.clipboard.writeText(entries[index]);
-}
+    function copyToClipboard(index) {
+      const entries = JSON.parse(localStorage.getItem('priceandpost_clipboard') || '[]');
+      navigator.clipboard.writeText(entries[index]);
+      alert('Copied to clipboard!');
+    }
 
-function clearClipboard() {
-  localStorage.removeItem(clipboardKey);
-  renderClipboard();
-}
+    function download(index) {
+      const entries = JSON.parse(localStorage.getItem('priceandpost_clipboard') || '[]');
+      const blob = new Blob([entries[index]], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `priceandpost_${index + 1}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
 
-function downloadClipboard() {
-  const data = getClipboard().join("\n---\n");
-  const blob = new Blob([data], { type: 'text/plain' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'clipboard_history.txt';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-renderClipboard();
-
+    loadClipboard();
   </script>
+
 </body>
 </html>
