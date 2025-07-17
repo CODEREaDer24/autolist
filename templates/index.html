@@ -1,150 +1,78 @@
-<!-- File: templates/index.html -->
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PriceAndPost</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap">
   <style>
     body {
-      margin: 0;
       font-family: 'Outfit', sans-serif;
-      background: linear-gradient(145deg, #f0f4ff, #dff6f0);
-      color: #222;
+      background: linear-gradient(135deg, #fef9f5, #eef2ff);
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
-    }
-    .container {
-      text-align: center;
-      padding: 2rem;
-      background: white;
-      border-radius: 24px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-      max-width: 500px;
-      width: 100%;
+      margin: 0;
     }
     h1 {
-      font-size: 2rem;
-      margin-bottom: 1.2rem;
-      color: #0a2540;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #111827;
     }
-    form {
+    .button-container {
       display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
+      gap: 2rem;
     }
-    .button-icon {
+    .btn {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1rem;
-      border: 2px dashed #ccc;
-      border-radius: 16px;
+      justify-content: center;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      padding: 1.5rem 2rem;
+      border-radius: 1.5rem;
+      font-size: 1.25rem;
       cursor: pointer;
-      transition: all 0.3s ease;
-      background: #f9f9f9;
+      transition: transform 0.2s, background 0.3s;
     }
-    .button-icon:hover {
-      background: #e0f0ff;
+    .btn:hover {
+      transform: scale(1.05);
+      background-color: #3730a3;
     }
-    .button-icon svg {
-      width: 64px;
-      height: 64px;
+    .btn svg {
+      width: 2.5rem;
+      height: 2.5rem;
       margin-bottom: 0.5rem;
     }
-    input[type="file"] {
+    form {
       display: none;
     }
-    .footer {
-      margin-top: 1rem;
-      font-size: 0.85rem;
-      color: #888;
-    }
-    .branding {
-      margin-top: 1.5rem;
-      font-weight: bold;
-      color: #0a2540;
-    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📸 PriceAndPost</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-      <label for="image" class="button-icon">
-        <svg fill="#000" viewBox="0 0 24 24">
-          <path d="M12 5a1 1 0 0 1 1 1v2h5a1 1 0 0 1 .993.883L19 9v10a1 1 0 0 1-.883.993L18 20H6a1 1 0 0 1-.993-.883L5 19V9a1 1 0 0 1 .883-.993L6 8h5V6a1 1 0 0 1 1-1zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+  <h1>📸 PriceAndPost</h1>
+  <div class="button-container">
+    <form method="POST" action="/upload" enctype="multipart/form-data">
+      <label class="btn">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
         </svg>
-        <strong>Snap or Upload</strong>
-        <input type="file" name="image" id="image" accept="image/*" onchange="this.form.submit()">
+        <span>Use Camera</span>
+        <input type="file" name="image" accept="image/*" capture="environment" onchange="this.form.submit()" hidden>
       </label>
     </form>
-    <div class="branding">Built by PriceAndPost</div>
-    <div class="footer">Upload an item to generate resale listings powered by AI.</div>
+    <form method="POST" action="/upload" enctype="multipart/form-data">
+      <label class="btn">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v-9a1.5 1.5 0 011.5-1.5h15A1.5 1.5 0 0121 7.5v9a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 16.5z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 12v.01" />
+        </svg>
+        <span>Upload Image</span>
+        <input type="file" name="image" accept="image/*" onchange="this.form.submit()" hidden>
+      </label>
+    </form>
   </div>
-</body>
-</html>
-  align-items: center;
-  justify-content: center;
-  border-radius: 1.5rem;
-  padding: 2rem;
-}
-
-.left { background-color: #eef2ff; }
-.right { background-color: #fff7ed; }
-
-.label {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-.upload-btn {
-  background-color: #6366f1;
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  border-radius: 1rem;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.upload-btn:hover {
-  background-color: #4f46e5;
-}
-
-.file-input {
-  display: none;
-}
-
-  </style>
-</head>
-<body>
-  <div class="branding">PriceAndPost</div>
-  <div class="container"><!-- Snap Panel -->
-<div class="panel left">
-  <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="showLoader()">
-    <input type="file" name="image" accept="image/*" capture="environment" id="snapInput" class="file-input" />
-    <div class="label">Snap a Picture</div>
-    <button type="button" class="upload-btn" onclick="document.getElementById('snapInput').click()">Use Camera</button>
-  </form>
-</div>
-
-<!-- Upload Panel -->
-<div class="panel right">
-  <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="showLoader()">
-    <input type="file" name="image" accept="image/*" id="uploadInput" class="file-input" />
-    <div class="label">Upload an Image</div>
-    <button type="button" class="upload-btn" onclick="document.getElementById('uploadInput').click()">Choose File</button>
-  </form>
-</div>
-
-  </div>  <script>
-    function showLoader() {
-      window.location.href = "/loading";
-    }
-  </script></body>
-</html>
+</body
