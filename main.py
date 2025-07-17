@@ -1,69 +1,57 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from werkzeug.utils import secure_filename
-from openai import OpenAI
-import os, base64, uuid
+from flask import Flask, render_template, request, redirect, url_for from werkzeug.utils import secure_filename from openai import OpenAI import os, base64, uuid
 
-app = Flask(__name__)
-app.secret_key = 'your_secret_key'
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+app = Flask(name) app.secret_key = 'your_secret_key' app.config['UPLOAD_FOLDER'] = 'static/uploads' os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 client = OpenAI()
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.route('/') def index(): return render_template('index.html')
 
-@app.route('/clipboard')
-def clipboard():
-    return render_template('clipboard.html')
+@app.route('/clipboard') def clipboard(): return render_template('clipboard.html')
 
-@app.route('/upload', methods=['POST'])
-def upload():
-    if 'image' not in request.files:
-        return redirect(url_for('index'))
+@app.route('/loading') def loading(): return render_template('loading.html')
 
-    file = request.files['image']
-    if file.filename == '':
-        return redirect(url_for('index'))
+@app.route('/upload', methods=['POST']) def upload(): if 'image' not in request.files: return redirect(url_for('index'))
 
-    filename = secure_filename(str(uuid.uuid4()) + '_' + file.filename)
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(filepath)
+file = request.files['image']
+if file.filename == '':
+    return redirect(url_for('index'))
 
-    try:
-        with open(filepath, 'rb') as f:
-            base64_image = base64.b64encode(f.read()).decode('utf-8')
+filename = secure_filename(str(uuid.uuid4()) + '_' + file.filename)
+filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+file.save(filepath)
 
-        prompt = [
-            {
-                "type": "image_url",
-                "image_url": {
-                    "url": f"data:image/jpeg;base64,{base64_image}"
-                }
-            },
-            {
-                "type": "text",
-                "text": (
-                    "There are multiple items in this image. Describe each one separately with: "
-                    "1. A short title, 2. Description, 3. Estimated resale value. Return results as a list."
-                )
+with open(filepath, 'rb') as f:
+    base64_image = base64.b64encode(f.read()).decode('utf-8')
+
+prompt = {
+    "role": "user",
+    "content": [
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": f"data:image/jpeg;base64,{base64_image}"
             }
-        ]
+        },
+        {
+            "type": "text",
+            "text": "There are multiple items in this image. Describe each one separately with: 1. A short title, 2. Description, 3. Estimated resale value. Return results as a list."
+        }
+    ]
+}
 
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=1500
-        )
+try:
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[prompt],
+        max_tokens=1500
+    )
 
-        result_text = response.choices[0].message.content.strip()
+    result_text = response.choices[0].message.content.strip()
 
-    except Exception as e:
-        print(f"OpenAI error: {e}")
-        result_text = f"Error analyzing image: {e}"
+except Exception as e:
+    result_text = f"Error analyzing image: {e}"
 
-    return render_template('result.html', result=result_text, image_url=filepath)
+return render_template('result.html', result=result_text, image_url=filepath)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if name == 'main': port = int(os.environ.get("PORT", 5000)) app.run(debug=False, host="0.0.0.0", port=port)
+
