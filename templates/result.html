@@ -1,90 +1,96 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Result - PriceAndPost</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Outfit', sans-serif;
-            margin: 0;
-            background-color: #f4f4ff;
-            color: #333;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        img {
-            max-width: 90%;
-            height: auto;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .result-box {
-            width: 100%;
-            max-width: 800px;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            margin-bottom: 2rem;
-        }
-        .field {
-            margin-bottom: 1rem;
-        }
-        .label {
-            font-weight: bold;
-            margin-bottom: 0.25rem;
-            display: block;
-        }
-        .text {
-            background: #eef;
-            padding: 0.75rem;
-            border-radius: 8px;
-            word-wrap: break-word;
-        }
-        .copy-btn {
-            margin-left: 0.5rem;
-            padding: 0.4rem 0.75rem;
-            background: #6c63ff;
-            border: none;
-            color: white;
-            font-size: 0.85rem;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .copy-btn:hover {
-            background-color: #5b54d6;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Results | PriceAndPost</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2e0e6ad5f.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      text-align: left;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #facc15;
+    }
+
+    .image-preview {
+      max-width: 500px;
+      width: 90%;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .result-box {
+      background: #1e293b;
+      padding: 1.5rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 700px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      position: relative;
+    }
+
+    .copy-btn {
+      background: #38bdf8;
+      color: #0f172a;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 1rem;
+    }
+
+    .copy-btn:hover {
+      background: #0ea5e9;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      opacity: 0.6;
+    }
+  </style>
 </head>
 <body>
-    <h1>Your AI-Powered Listing</h1>
-    <img src="{{ image_url }}" alt="Uploaded Image"><div class="result-box">
-    {% set lines = result.split('\n') %}
-    {% for line in lines if line.strip() %}
-    <div class="field">
-        <span class="label">Detail:</span>
-        <div class="text" id="copyText{{ loop.index }}">{{ line }}</div>
-        <button class="copy-btn" onclick="copyToClipboard('copyText{{ loop.index }}')">Copy</button>
-    </div>
-    {% endfor %}
-</div>
 
-<script>
-    function copyToClipboard(id) {
-        const text = document.getElementById(id).innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            alert("Copied to clipboard!");
-        });
+  <h1>🧠 AI Listing Results</h1>
+
+  {% if image_url %}
+    <img src="{{ url_for('static', filename=image_url.split('static/')[-1]) }}" alt="Uploaded Image" class="image-preview">
+  {% endif %}
+
+  <div class="result-box" id="resultText">
+    {{ result }}
+  </div>
+
+  <button class="copy-btn" onclick="copyResult()">Copy Result</button>
+
+  <div class="footer">
+    <p>Need to try another image? <a href="{{ url_for('index') }}" style="color:#38bdf8;">Start over</a></p>
+  </div>
+
+  <script>
+    function copyResult() {
+      const text = document.getElementById('resultText').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Copied to clipboard!");
+      });
     }
-</script>
+  </script>
 
 </body>
 </html>
