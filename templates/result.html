@@ -1,96 +1,106 @@
+<!-- File: templates/result.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Results | PriceAndPost</title>
+  <title>Results — PriceAndPost</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/a2e0e6ad5f.js" crossorigin="anonymous"></script>
   <style>
     body {
       font-family: 'Outfit', sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: #f6f9ff;
       padding: 2rem;
+      color: #111;
+      text-align: center;
+    }
+
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 24px;
+      max-width: 700px;
+      margin: auto;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    img {
+      max-width: 100%;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    .copy-group {
+      margin-bottom: 1rem;
       text-align: left;
     }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: #facc15;
+    .copy-label {
+      font-weight: bold;
+      margin-bottom: 0.3rem;
     }
 
-    .image-preview {
-      max-width: 500px;
-      width: 90%;
-      border-radius: 10px;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
-
-    .result-box {
-      background: #1e293b;
-      padding: 1.5rem;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 700px;
-      line-height: 1.6;
-      white-space: pre-wrap;
+    .copy-text {
+      background: #f0f4f8;
+      padding: 0.75rem;
+      border-radius: 8px;
+      word-wrap: break-word;
       position: relative;
     }
 
     .copy-btn {
-      background: #38bdf8;
-      color: #0f172a;
+      position: absolute;
+      top: 10px;
+      right: 10px;
       border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-weight: bold;
+      background: #007bff;
+      color: white;
+      border-radius: 4px;
+      padding: 0.2rem 0.5rem;
       cursor: pointer;
-      transition: background 0.2s;
-      margin-top: 1rem;
+      font-size: 0.8rem;
     }
 
-    .copy-btn:hover {
-      background: #0ea5e9;
-    }
-
-    .footer {
-      margin-top: 3rem;
+    .branding {
+      margin-top: 2rem;
       font-size: 0.9rem;
-      opacity: 0.6;
+      color: #888;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>🧠 AI-Generated Resale Details</h2>
 
-  <h1>🧠 AI Listing Results</h1>
+    {% if image_url %}
+    <img src="{{ image_url }}" alt="Uploaded item">
+    {% endif %}
 
-  {% if image_url %}
-    <img src="{{ url_for('static', filename=image_url.split('static/')[-1]) }}" alt="Uploaded Image" class="image-preview">
-  {% endif %}
+    <div class="section">
+      {% for line in result.split('\n') %}
+        <div class="copy-group">
+          <div class="copy-label">Generated:</div>
+          <div class="copy-text">
+            {{ line }}
+            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
 
-  <div class="result-box" id="resultText">
-    {{ result }}
-  </div>
-
-  <button class="copy-btn" onclick="copyResult()">Copy Result</button>
-
-  <div class="footer">
-    <p>Need to try another image? <a href="{{ url_for('index') }}" style="color:#38bdf8;">Start over</a></p>
+    <div class="branding">🧾 Powered by PriceAndPost | AI Clipboard Active</div>
   </div>
 
   <script>
-    function copyResult() {
-      const text = document.getElementById('resultText').innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        alert("Copied to clipboard!");
-      });
+    function copyToClipboard(btn) {
+      const text = btn.parentElement.textContent.replace("Copy", "").trim();
+      navigator.clipboard.writeText(text);
+      btn.textContent = "✓ Copied";
+      setTimeout(() => btn.textContent = "Copy", 1000);
     }
   </script>
-
 </body>
 </html>
