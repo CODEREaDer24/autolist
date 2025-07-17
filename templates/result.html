@@ -1,130 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Results - PriceAndPost</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Outfit', sans-serif;
-            background: linear-gradient(to right, #eef2ff, #fff7ed);
-            color: #333;
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: #1f2937;
-        }
-
-        img {
-            max-width: 100%;
-            border-radius: 0.5rem;
-            margin-bottom: 2rem;
-        }
-
-        pre {
-            background: #f9fafb;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-
-        .copy-block {
-            margin-bottom: 1.5rem;
-        }
-
-        .label {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .copy-text {
-            background: #f3f4f6;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            font-family: monospace;
-        }
-
-        .copy-btn {
-            margin-top: 0.25rem;
-            background: #6366f1;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            border-radius: 0.4rem;
-            cursor: pointer;
-        }
-
-        .copy-btn:hover {
-            background: #4f46e5;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 0.9rem;
-            color: #6b7280;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Results | PriceAndPost</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>🧠 PriceAndPost Results</h1>
-        <img src="{{ image_url }}" alt="Uploaded Image">
-        <div id="resultArea">
-            <pre>{{ result }}</pre>
-        </div>
+  <div class="container">
+    <h1>🧾 Your Listing</h1>
 
-        <!-- Clipboard Copy Controls -->
-        <div class="copy-block">
-            <div class="label">Copy Title</div>
-            <div class="copy-text" id="titleText">[Your title will appear here]</div>
-            <button class="copy-btn" onclick="copyText('titleText')">Copy Title</button>
-        </div>
-
-        <div class="copy-block">
-            <div class="label">Copy Description</div>
-            <div class="copy-text" id="descriptionText">[Your description will appear here]</div>
-            <button class="copy-btn" onclick="copyText('descriptionText')">Copy Description</button>
-        </div>
-
-        <div class="copy-block">
-            <div class="label">Copy Price</div>
-            <div class="copy-text" id="priceText">[Your price will appear here]</div>
-            <button class="copy-btn" onclick="copyText('priceText')">Copy Price</button>
-        </div>
-
-        <div class="footer">📋 Clipboard AI teased. Want more? Check the clipboard page.</div>
+    <div class="image-preview">
+      <img src="{{ url_for('static', filename=image_url.split('static/')[-1]) }}" alt="Uploaded Image">
     </div>
 
-    <script>
-        function copyText(id) {
-            const text = document.getElementById(id).textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert(`Copied: ${text}`);
-            });
-        }
+    <div class="result-field">
+      <label>📌 Title</label>
+      <div class="result-box">
+        <span id="titleText">{{ title }}</span>
+        <button onclick="copyText('titleText')">📋 Copy</button>
+      </div>
+    </div>
 
-        // Optional: Auto-fill individual boxes from result
-        const result = `{{ result }}`;
-        const lines = result.split('\n');
-        document.getElementById('titleText').textContent = lines.find(l => l.toLowerCase().includes("title")) || lines[0];
-        document.getElementById('descriptionText').textContent = lines.find(l => l.toLowerCase().includes("description")) || lines[1];
-        document.getElementById('priceText').textContent = lines.find(l => l.toLowerCase().includes("value")) || lines[2];
-    </script>
+    <div class="result-field">
+      <label>📝 Description</label>
+      <div class="result-box">
+        <span id="descText">{{ description }}</span>
+        <button onclick="copyText('descText')">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="result-field">
+      <label>💰 Price</label>
+      <div class="result-box">
+        <span id="priceText">{{ price }}</span>
+        <button onclick="copyText('priceText')">📋 Copy</button>
+      </div>
+    </div>
+
+    <a href="{{ url_for('index') }}" class="back-button">🔁 Try Another</a>
+  </div>
+
+  <script>
+    function copyText(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text);
+      alert('Copied: ' + text);
+    }
+  </script>
 </body>
 </html>
