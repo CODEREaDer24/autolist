@@ -10,7 +10,8 @@ app.secret_key = 'your_secret_key'
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-client = OpenAI()
+# Use API key from environment variable
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 @app.route('/')
 def index():
@@ -62,7 +63,6 @@ def upload():
             messages=[prompt],
             max_tokens=1500
         )
-
         result_text = response.choices[0].message.content.strip()
 
     except Exception as e:
@@ -71,4 +71,4 @@ def upload():
     return render_template('result.html', result=result_text, image_url=filepath)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
