@@ -1,12 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from werkzeug.utils import secure_filename
-from openai import OpenAI
 import os
 import base64
 import uuid
+import time
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'defaultsecret')
+
+UPLOAD_FOLDER = 'static/uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/')
 def index():
@@ -21,16 +24,33 @@ def upload():
     if image.filename == '':
         return "No selected file", 400
 
-    filename = secure_filename(image.filename)
-    filepath = os.path.join('static/uploads', filename)
+    filename = f"{uuid.uuid4().hex}_{secure_filename(image.filename)}"
+    filepath = os.path.join(UPLOAD_FOLDER, filename)
     image.save(filepath)
 
-    # Placeholder for AI logic
-    title = "Generated Title"
-    description = "Generated Description"
-    price = "$9.99"
+    # Store path in session to use after simulated loading
+    session['image_path'] = filepath
 
-    return render_template('result.html', image_url=filepath, title=title, description=description, price=price)
+    return redirect(url_for('loading'))
+
+@app.route('/loading')
+def loading():
+    # Simulate AI processing delay
+    time.sleep(2.5)
+    return redirect(url_for('result'))
+
+@app.route('/result')
+def result():
+    image_path = session.get('image_path')
+    if not image_path:
+        return redirect(url_for('index'))
+
+    # Placeholder AI outputs
+    title = "Vintage Coffee Maker"
+    description = "A reliable, classic coffee maker perfect for retro kitchens."
+    price = "$25.00"
+
+    return render_template('result.html', image_url=image_path, title=title, description=description, price=price)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
