@@ -1,55 +1,36 @@
-from flask import Flask, render_template, request, redirect, url_for, session from werkzeug.utils import secure_filename from openai import OpenAI import os, base64, uuid
+from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.utils import secure_filename
+from openai import OpenAI
+import os
+import base64
+import uuid
 
-app = Flask(name) app.secret_key = 'your_secret_key' app.config['UPLOAD_FOLDER'] = 'static/uploads' os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+app = Flask(__name__)
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'defaultsecret')
 
-client = OpenAI()
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-@app.route('/') def index(): return render_template('index.html')
+@app.route('/upload', methods=['POST'])
+def upload():
+    if 'image' not in request.files:
+        return "No image part", 400
 
-@app.route('/clipboard') def clipboard(): return render_template('clipboard.html')
+    image = request.files['image']
+    if image.filename == '':
+        return "No selected file", 400
 
-@app.route('/upload', methods=['POST']) def upload(): if 'image' not in request.files: return redirect(url_for('index'))
+    filename = secure_filename(image.filename)
+    filepath = os.path.join('static/uploads', filename)
+    image.save(filepath)
 
-file = request.files['image']
-if file.filename == '':
-    return redirect(url_for('index'))
+    # Placeholder for AI logic
+    title = "Generated Title"
+    description = "Generated Description"
+    price = "$9.99"
 
-filename = secure_filename(str(uuid.uuid4()) + '_' + file.filename)
-filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-file.save(filepath)
+    return render_template('results.html', image_url=filepath, title=title, description=description, price=price)
 
-with open(filepath, 'rb') as f:
-    base64_image = base64.b64encode(f.read()).decode('utf-8')
-
-prompt = {
-    "role": "user",
-    "content": [
-        {
-            "type": "image_url",
-            "image_url": {
-                "url": f"data:image/jpeg;base64,{base64_image}"
-            }
-        },
-        {
-            "type": "text",
-            "text": "There are multiple items in this image. Describe each one separately with: 1. A short title, 2. Description, 3. Estimated resale value. Return results as a list."
-        }
-    ]
-}
-
-try:
-    response = client.chat.completions.create(
-        model="gpt-4-vision-preview",
-        messages=[prompt],
-        max_tokens=1500
-    )
-
-    result_text = response.choices[0].message.content.strip()
-
-except Exception as e:
-    result_text = f"Error analyzing image: {e}"
-
-return render_template('result.html', result=result_text, image_url=filepath, filename=filename)
-
-if name == 'main': port = int(os.environ.get("PORT", 5000)) app.run(host='0.0.0.0', port=port, debug=True)
-
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
