@@ -1,56 +1,65 @@
-<!-- File: loading.html --><!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Processing... | PriceAndPost</title>
+  <title>Analyzing... | PriceAndPost</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
       font-family: 'Outfit', sans-serif;
-      background: #fefefe;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-    .loader {
+      background: #0f172a;
+      color: #facc15;
+      margin: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
+      height: 100vh;
       text-align: center;
     }
-    .spinner {
-      border: 10px solid #f3f3f3;
-      border-top: 10px solid #6366f1;
-      border-radius: 50%;
-      width: 100px;
-      height: 100px;
-      animation: spin 1s linear infinite;
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #e2e8f0;
       margin-bottom: 2rem;
     }
-    .pulse-text {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #374151;
-      animation: pulse 1.5s ease-in-out infinite;
+
+    .loader {
+      border: 8px solid #1e293b;
+      border-top: 8px solid #38bdf8;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
     }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    .pulse-text {
+      animation: pulse 2s infinite;
+      color: #94a3b8;
+    }
+
     @keyframes pulse {
-      0% { opacity: 0.3; }
+      0%, 100% { opacity: 0.3; }
       50% { opacity: 1; }
-      100% { opacity: 0.3; }
     }
   </style>
 </head>
 <body>
-  <div class="loader">
-    <div class="spinner"></div>
-    <div class="pulse-text">Analyzing your image... hang tight!</div>
-  </div>
+
+  <div class="loader"></div>
+  <h1>Analyzing Your Image...</h1>
+  <p class="pulse-text">This might take a few seconds.<br>Please hold tight while the AI works its magic.</p>
+
 </body>
 </html>
