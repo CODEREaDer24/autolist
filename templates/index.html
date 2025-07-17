@@ -2,25 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PriceAndPost</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="container">
     <h1>📸 PriceAndPost</h1>
-    <p>Snap a photo of your item to generate a ready-to-post resale listing.</p>
+    <p class="tagline">Snap or upload an item to generate a resale listing instantly.</p>
 
-    <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
-      <label class="upload-button" for="image">
-        📤 Choose File
-        <input type="file" name="image" id="image" accept="image/*" required />
+    <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+      <label class="action-button">
+        <span>📷 Snap a Picture</span>
+        <input type="file" name="image" accept="image/*" capture="environment" required>
       </label>
-      <button type="submit">🚀 Generate Listing</button>
+
+      <label class="action-button">
+        <span>⬆️ Upload an Image</span>
+        <input type="file" name="image" accept="image/*" required>
+      </label>
+
+      <button type="submit" class="submit-button">🚀 Generate Listing</button>
     </form>
 
     <footer>
-      <p class="footer-note">Built by PriceAndPost</p>
+      <p class="footer-note">Built with 💡 by PriceAndPost</p>
     </footer>
   </div>
 </body>
