@@ -1,109 +1,58 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from werkzeug.utils import secure_filename
-from openai import OpenAI
 import os
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from werkzeug.utils import secure_filename
+from PIL import Image
 import uuid
-import time
-import base64
+
+UPLOAD_FOLDER = 'uploads'
+RESULT_FOLDER = 'static/results'
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'changeme')
-UPLOAD_FOLDER = 'static/uploads'
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['RESULT_FOLDER'] = RESULT_FOLDER
 
-openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# Ensure upload/result folders exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(RESULT_FOLDER, exist_ok=True)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
-def upload():
-    if 'image' not in request.files:
-        return "No image uploaded", 400
+def upload_file():
+    if 'file' not in request.files:
+        return "No file uploaded.", 400
 
-    image = request.files['image']
-    if image.filename == '':
-        return "No file selected", 400
+    file = request.files['file']
+    if file.filename == '':
+        return "No selected file.", 400
 
-    filename = f"{uuid.uuid4().hex}_{secure_filename(image.filename)}"
-    filepath = os.path.join(UPLOAD_FOLDER, filename)
-    image.save(filepath)
+    filename = secure_filename(file.filename)
+    ext = os.path.splitext(filename)[1]
+    unique_name = f"{uuid.uuid4().hex}{ext}"
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_name)
+    file.save(filepath)
 
-    session['image_path'] = filepath
-    return redirect(url_for('loading'))
+    # Optionally: resize image for performance
+    image = Image.open(filepath)
+    image = image.convert("RGB")
+    image.save(os.path.join(app.config['RESULT_FOLDER'], unique_name))
 
-@app.route('/loading')
-def loading():
-    time.sleep(2)
-    return redirect(url_for('result'))
+    # Simulate result for now (replace with AI logic)
+    title = "Nike Comp-Lite Inline Skates"
+    description = "Vintage Nike inline skates with aluminum frames and 76mm wheels. Great for collectors or skaters who want solid retro gear."
+    price = "$85 CAD"
 
-@app.route('/result')
-def result():
-    image_path = session.get('image_path')
-    if not image_path:
-        return redirect(url_for('index'))
+    return render_template('results.html',
+                           image_filename=unique_name,
+                           title=title,
+                           description=description,
+                           price=price)
 
-    items = []
-    raw_output = ""
-
-    try:
-        with open(image_path, "rb") as img_file:
-            image_b64 = base64.b64encode(img_file.read()).decode()
-
-        response = openai_client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You're an expert online seller. Analyze the image and identify each item. For each item, return:\n"
-                        "- Title\n"
-                        "- Description\n"
-                        "- Estimated resale price (USD)\n"
-                        "- A resale caption for Facebook Marketplace or Craigslist\n\n"
-                        "Format like:\n"
-                        "Item 1:\\nTitle: ...\\nDescription: ...\\nPrice: ...\\nCaption: ...\\n\\nItem 2: ..."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": "There are multiple items in this image. Describe each."},
-                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_b64}"}}
-                    ]
-                }
-            ],
-            max_tokens=1200
-        )
-
-        raw_output = response.choices[0].message.content.strip()
-        blocks = raw_output.split("Item ")
-        for block in blocks[1:]:
-            lines = block.strip().split("\n")
-            title = description = price = caption = ""
-            for line in lines:
-                if "Title:" in line:
-                    title = line.split("Title:", 1)[1].strip()
-                elif "Description:" in line:
-                    description = line.split("Description:", 1)[1].strip()
-                elif "Price:" in line:
-                    price = line.split("Price:", 1)[1].strip()
-                elif "Caption:" in line:
-                    caption = line.split("Caption:", 1)[1].strip()
-            if title:
-                items.append({
-                    "title": title,
-                    "description": description,
-                    "price": price,
-                    "caption": caption
-                })
-
-    except Exception as e:
-        raw_output = f"[OpenAI Error] {str(e)}"
-        items = []
-
-    return render_template("result.html", image_url=image_path, items=items, raw_output=raw_output)
+@app.route('/static/results/<filename>')
+def result_image(filename):
+    return send_from_directory(app.config['RESULT_FOLDER'], filename)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=10000)
