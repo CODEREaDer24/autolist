@@ -9,15 +9,19 @@
 <body>
   <div class="container">
     <h1>📸 PriceAndPost</h1>
-    <p>Snap a photo of your item, get a price and ready-to-post listing.</p>
+    <p>Snap a photo of your item to generate a ready-to-post resale listing.</p>
 
     <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
-      <label for="image" class="upload-button">
-        <span>📷 Upload Image</span>
+      <label class="upload-button" for="image">
+        📤 Choose File
         <input type="file" name="image" id="image" accept="image/*" required />
       </label>
-      <button type="submit">🔍 Analyze</button>
+      <button type="submit">🚀 Generate Listing</button>
     </form>
+
+    <footer>
+      <p class="footer-note">Built by PriceAndPost</p>
+    </footer>
   </div>
 </body>
 </html>
