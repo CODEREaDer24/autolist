@@ -1,5 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, session from werkzeug.utils import secure_filename from openai import OpenAI import os, base64, uuid
-
+from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.utils import secure_filename
+from openai import OpenAI
+import os
+import base64
+import uuid
 app = Flask(name) app.secret_key = 'your_secret_key' app.config['UPLOAD_FOLDER'] = 'static/uploads' os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 client = OpenAI()
