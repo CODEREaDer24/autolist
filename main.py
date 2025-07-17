@@ -30,7 +30,7 @@ def upload():
     description = "Generated Description"
     price = "$9.99"
 
-    return render_template('results.html', image_url=filepath, title=title, description=description, price=price)
+    return render_template('result.html', image_url=filepath, title=title, description=description, price=price)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
