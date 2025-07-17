@@ -8,16 +8,13 @@ from PIL import Image
 import base64
 from io import BytesIO
 
-# === App Setup ===
 app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'changeme')
 UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# === OpenAI Setup ===
 openai_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-# === Routes ===
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -49,55 +46,60 @@ def result():
     if not image_path:
         return redirect(url_for('index'))
 
+    items = []
     raw_output = ""
-    title = "Unknown Item"
-    description = ""
-    price = ""
 
     try:
-        with Image.open(image_path) as img:
-            buffered = BytesIO()
-            img.save(buffered, format="PNG")
-            img_b64 = base64.b64encode(buffered.getvalue()).decode()
+        with open(image_path, "rb") as img_file:
+            image_b64 = base64.b64encode(img_file.read()).decode()
 
         response = openai_client.chat.completions.create(
             model="gpt-4o",
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a resale listing assistant. Return only:\n1. Title\n2. Description\n3. Price in USD."
+                    "content": (
+                        "You're a resale listing expert. Analyze the image and identify multiple items. "
+                        "For each item, return:\n"
+                        "- Title\n"
+                        "- Description\n"
+                        "- Estimated resale price in USD\n\n"
+                        "Format like:\n"
+                        "Item 1:\\nTitle: ...\\nDescription: ...\\nPrice: ...\\n\\n"
+                        "Item 2:\\n..."
+                    )
                 },
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": "Describe the item in this image and suggest a resale price."},
-                        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img_b64}"}}
+                        {"type": "text", "text": "There are multiple items in this image. Describe each."},
+                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image_b64}"}}
                     ]
                 }
             ],
-            max_tokens=300
+            max_tokens=1000
         )
 
         raw_output = response.choices[0].message.content.strip()
-        lines = raw_output.split("\n")
-
-        title = next((line.split(":", 1)[1].strip() for line in lines if "title" in line.lower()), title)
-        description = next((line.split(":", 1)[1].strip() for line in lines if "description" in line.lower()), description)
-        price = next((line.split(":", 1)[1].strip() for line in lines if "price" in line.lower()), price)
+        blocks = raw_output.split("Item ")
+        for block in blocks[1:]:
+            lines = block.strip().split("\n")
+            title = description = price = ""
+            for line in lines:
+                if "Title:" in line:
+                    title = line.split("Title:", 1)[1].strip()
+                elif "Description:" in line:
+                    description = line.split("Description:", 1)[1].strip()
+                elif "Price:" in line:
+                    price = line.split("Price:", 1)[1].strip()
+            if title:
+                items.append({"title": title, "description": description, "price": price})
 
     except Exception as e:
         raw_output = f"[OpenAI Error] {str(e)}"
-        description = "Could not analyze image. Please try again or check the format."
+        items = []
 
-    return render_template(
-        'result.html',
-        image_url=image_path,
-        title=title,
-        description=description,
-        price=price,
-        raw_output=raw_output
-    )
+    return render_template("result.html", image_url=image_path, items=items, raw_output=raw_output)
 
-# === Launch App ===
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
