@@ -2,73 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Results | PriceAndPost</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-  <div class="container">
-    <h1>Listing Results</h1>
-
-    <div class="image-preview">
-      <img src="{{ url_for('static', filename=image_url.split('static/')[-1]) }}" alt="Uploaded Image">
-    </div>
-
-    {% if items %}
-      {% for item in items %}
-        <div class="result-field">
-          <label>Title {{ loop.index }}</label>
-          <div class="result-box">
-            <span id="title-{{ loop.index }}">{{ item.title }}</span>
-            <button onclick="copyText('title-{{ loop.index }}')">Copy</button>
-          </div>
-        </div>
-
-        <div class="result-field">
-          <label>Description {{ loop.index }}</label>
-          <div class="result-box">
-            <span id="desc-{{ loop.index }}">{{ item.description }}</span>
-            <button onclick="copyText('desc-{{ loop.index }}')">Copy</button>
-          </div>
-        </div>
-
-        <div class="result-field">
-          <label>Price {{ loop.index }}</label>
-          <div class="result-box">
-            <span id="price-{{ loop.index }}">{{ item.price }}</span>
-            <button onclick="copyText('price-{{ loop.index }}')">Copy</button>
-          </div>
-        </div>
-
-        <div class="result-field">
-          <label>Caption {{ loop.index }}</label>
-          <div class="result-box">
-            <span id="caption-{{ loop.index }}">{{ item.caption }}</span>
-            <button onclick="copyText('caption-{{ loop.index }}')">Copy</button>
-          </div>
-        </div>
-        <hr>
-      {% endfor %}
-    {% else %}
-      <p>No items detected. Try another image?</p>
-    {% endif %}
-
-    <a href="{{ url_for('index') }}" class="back-button">Start Over</a>
-
-    {% if raw_output %}
-      <div class="result-field" style="margin-top: 2rem;">
-        <label>Raw GPT Output</label>
-        <pre style="background:#f5f5f5; padding:1rem; border-radius:0.5rem; white-space:pre-wrap;">{{ raw_output }}</pre>
-      </div>
-    {% endif %}
-  </div>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧾 Listing Result</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <script>
     function copyText(id) {
       const text = document.getElementById(id).innerText;
-      navigator.clipboard.writeText(text);
-      alert('Copied: ' + text);
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard!');
+      });
     }
   </script>
+</head>
+<body>
+  <main class="container">
+    <div class="card">
+      <h1>🧾 Listing Result</h1>
+
+      <img src="{{ url_for('result_image', filename=image_filename) }}" alt="Uploaded Item" class="result-image" />
+
+      <div class="result-block">
+        <h2>Title:</h2>
+        <p id="title">{{ title }}</p>
+        <button onclick="copyText('title')">Copy Title</button>
+      </div>
+
+      <div class="result-block">
+        <h2>Description:</h2>
+        <p id="description">{{ description }}</p>
+        <button onclick="copyText('description')">Copy Description</button>
+      </div>
+
+      <div class="result-block">
+        <h2>Price:</h2>
+        <p id="price">{{ price }}</p>
+        <button onclick="copyText('price')">Copy Price</button>
+      </div>
+
+      <a href="/" class="generate-btn">🔁 Try Another</a>
+    </div>
+  </main>
 </body>
 </html>
