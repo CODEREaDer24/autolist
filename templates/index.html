@@ -1,98 +1,98 @@
-<!-- File: index.html --><!DOCTYPE html><html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PriceAndPost</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/outfit@4.5.6/index.min.css">
   <style>
     body {
       margin: 0;
       font-family: 'Outfit', sans-serif;
-      background: linear-gradient(to right, #e0f7fa, #fff3e0);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-    .container {
-      text-align: center;
-      padding: 3rem;
-      background: white;
-      border-radius: 2rem;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 2rem;
-      color: #2e2e2e;
-    }
-    .action-grid {
-      display: flex;
-      gap: 2rem;
-      justify-content: center;
-    }
-    .action-tile {
-      width: 160px;
-      height: 160px;
-      background: #f1f5f9;
-      border-radius: 1.5rem;
+      background: linear-gradient(to right, #dbeafe, #fef9c3);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .action-tile:hover {
-      background: #e0e7ff;
-      transform: scale(1.05);
-    }
-    .action-tile svg {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 1rem;
-      color: #4f46e5;
-    }
-    .action-tile span {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #1e293b;
-    }
-    form {
-      display: none;
-    }
+      min-height: 100vh;
+    }.branding {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #4f46e5;
+  margin-bottom: 2rem;
+}
+
+.container {
+  display: flex;
+  gap: 2rem;
+  background: white;
+  border-radius: 2rem;
+  padding: 3rem;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.5rem;
+  padding: 2rem;
+}
+
+.left { background-color: #eef2ff; }
+.right { background-color: #fff7ed; }
+
+.label {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.upload-btn {
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.upload-btn:hover {
+  background-color: #4f46e5;
+}
+
+.file-input {
+  display: none;
+}
+
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>PriceAndPost</h1>
-    <div class="action-grid">
-      <form action="/upload" method="post" enctype="multipart/form-data" id="cameraForm">
-        <input type="file" accept="image/*" capture="environment" name="image" onchange="submitForm('cameraForm')">
-      </form>
-      <form action="/upload" method="post" enctype="multipart/form-data" id="uploadForm">
-        <input type="file" accept="image/*" name="image" onchange="submitForm('uploadForm')">
-      </form>
-      <div class="action-tile" onclick="triggerFile('cameraForm')">
-        <i data-lucide="camera"></i>
-        <span>Snap a Picture</span>
-      </div>
-      <div class="action-tile" onclick="triggerFile('uploadForm')">
-        <i data-lucide="upload"></i>
-        <span>Upload Image</span>
-      </div>
-    </div>
-  </div>
-  <script>
-    lucide.createIcons();
-    function triggerFile(formId) {
-      document.querySelector(`#${formId} input[type='file']`).click();
+  <div class="branding">PriceAndPost</div>
+  <div class="container"><!-- Snap Panel -->
+<div class="panel left">
+  <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="showLoader()">
+    <input type="file" name="image" accept="image/*" capture="environment" id="snapInput" class="file-input" />
+    <div class="label">Snap a Picture</div>
+    <button type="button" class="upload-btn" onclick="document.getElementById('snapInput').click()">Use Camera</button>
+  </form>
+</div>
+
+<!-- Upload Panel -->
+<div class="panel right">
+  <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="showLoader()">
+    <input type="file" name="image" accept="image/*" id="uploadInput" class="file-input" />
+    <div class="label">Upload an Image</div>
+    <button type="button" class="upload-btn" onclick="document.getElementById('uploadInput').click()">Choose File</button>
+  </form>
+</div>
+
+  </div>  <script>
+    function showLoader() {
+      window.location.href = "/loading";
     }
-    function submitForm(formId) {
-      document.getElementById(formId).submit();
-    }
-  </script>
-</body>
+  </script></body>
 </html>
