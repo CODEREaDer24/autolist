@@ -1,73 +1,38 @@
-<!-- File: templates/loading.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Analyzing... | PriceAndPost</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
-    body {
-      background: #0f172a;
-      color: #fff;
-      font-family: 'Outfit', sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    h1 {
-      font-size: 1.8rem;
-      margin-top: 2rem;
-      letter-spacing: 1px;
-    }
-
-    .orbital-loader {
-      width: 80px;
-      height: 80px;
-      position: relative;
-      animation: rotate 1.2s linear infinite;
-    }
-
-    .orbital-loader div {
-      width: 20px;
-      height: 20px;
-      background: #38bdf8;
+    .loading-spinner {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #007bff;
       border-radius: 50%;
-      position: absolute;
-      animation: bounce 1.2s infinite ease-in-out alternate;
+      width: 64px;
+      height: 64px;
+      animation: spin 1s linear infinite;
+      margin: 2rem auto;
     }
 
-    .orbital-loader div:nth-child(2) {
-      left: 60px;
-      animation-delay: -0.6s;
-    }
-
-    @keyframes rotate {
+    @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
 
-    @keyframes bounce {
-      0% { top: 0; }
-      100% { top: 60px; }
-    }
-
-    .note {
+    .loading-message {
+      font-size: 1.2rem;
+      color: #555;
       margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #aaa;
     }
   </style>
 </head>
 <body>
-  <div class="orbital-loader">
-    <div></div>
-    <div></div>
+  <div class="container">
+    <h1>⚙️ Analyzing Image...</h1>
+    <div class="loading-spinner"></div>
+    <p class="loading-message">This should only take a few seconds.</p>
   </div>
-  <h1>Analyzing Your Items…</h1>
-  <div class="note">Hold tight, our AI is figuring it out.</div>
 </body>
 </html>
