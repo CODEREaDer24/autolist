@@ -1,39 +1,91 @@
-<!DOCTYPE html><html lang="en">
+<!-- File: templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>PriceAndPost</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/outfit@4.5.6/index.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Outfit', sans-serif;
-      background: linear-gradient(to right, #dbeafe, #fef9c3);
+      background: linear-gradient(145deg, #f0f4ff, #dff6f0);
+      color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1.2rem;
+      color: #0a2540;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .button-icon {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }.branding {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #4f46e5;
-  margin-bottom: 2rem;
-}
-
-.container {
-  display: flex;
-  gap: 2rem;
-  background: white;
-  border-radius: 2rem;
-  padding: 3rem;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
-}
-
-.panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+      padding: 1rem;
+      border: 2px dashed #ccc;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #f9f9f9;
+    }
+    .button-icon:hover {
+      background: #e0f0ff;
+    }
+    .button-icon svg {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 0.5rem;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    .footer {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #888;
+    }
+    .branding {
+      margin-top: 1.5rem;
+      font-weight: bold;
+      color: #0a2540;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📸 PriceAndPost</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <label for="image" class="button-icon">
+        <svg fill="#000" viewBox="0 0 24 24">
+          <path d="M12 5a1 1 0 0 1 1 1v2h5a1 1 0 0 1 .993.883L19 9v10a1 1 0 0 1-.883.993L18 20H6a1 1 0 0 1-.993-.883L5 19V9a1 1 0 0 1 .883-.993L6 8h5V6a1 1 0 0 1 1-1zm0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/>
+        </svg>
+        <strong>Snap or Upload</strong>
+        <input type="file" name="image" id="image" accept="image/*" onchange="this.form.submit()">
+      </label>
+    </form>
+    <div class="branding">Built by PriceAndPost</div>
+    <div class="footer">Upload an item to generate resale listings powered by AI.</div>
+  </div>
+</body>
+</html>
   align-items: center;
   justify-content: center;
   border-radius: 1.5rem;
