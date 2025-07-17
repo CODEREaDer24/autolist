@@ -19,24 +19,35 @@
         <div class="result-field">
           <label>📌 Title {{ loop.index }}</label>
           <div class="result-box">
-            <span>{{ item.title }}</span>
-            <button onclick="navigator.clipboard.writeText('{{ item.title }}')">📋 Copy</button>
+            <span id="title-{{ loop.index }}">{{ item.title }}</span>
+            <button onclick="copyText('title-{{ loop.index }}')">📋 Copy</button>
           </div>
         </div>
+
         <div class="result-field">
           <label>📝 Description {{ loop.index }}</label>
           <div class="result-box">
-            <span>{{ item.description }}</span>
-            <button onclick="navigator.clipboard.writeText('{{ item.description }}')">📋 Copy</button>
+            <span id="desc-{{ loop.index }}">{{ item.description }}</span>
+            <button onclick="copyText('desc-{{ loop.index }}')">📋 Copy</button>
           </div>
         </div>
+
         <div class="result-field">
           <label>💰 Price {{ loop.index }}</label>
           <div class="result-box">
-            <span>{{ item.price }}</span>
-            <button onclick="navigator.clipboard.writeText('{{ item.price }}')">📋 Copy</button>
+            <span id="price-{{ loop.index }}">{{ item.price }}</span>
+            <button onclick="copyText('price-{{ loop.index }}')">📋 Copy</button>
           </div>
         </div>
+
+        <div class="result-field">
+          <label>🗣️ Caption {{ loop.index }}</label>
+          <div class="result-box">
+            <span id="caption-{{ loop.index }}">{{ item.caption }}</span>
+            <button onclick="copyText('caption-{{ loop.index }}')">📋 Copy</button>
+          </div>
+        </div>
+
         <hr>
       {% endfor %}
     {% else %}
@@ -52,5 +63,13 @@
       </div>
     {% endif %}
   </div>
+
+  <script>
+    function copyText(id) {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text);
+      alert('Copied: ' + text);
+    }
+  </script>
 </body>
 </html>
