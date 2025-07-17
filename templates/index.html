@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PriceAndPost</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PriceAndPost</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
-    <div class="container">
-        <h1>📸 PriceAndPost</h1>
-        <p class="tagline">Snap or upload an item to generate a resale listing instantly.</p>
+  <main class="container">
+    <div class="card">
+      <h1>📸 PriceAndPost</h1>
+      <p>Snap or upload a product photo to generate a title, description, and price.</p>
 
-        <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
-            
-            <label class="action-button">
-                📷 Snap a Picture
-                <input type="file" name="image" accept="image/*" capture="environment" required />
-            </label>
-            
-            <label class="action-button">
-                ⬆️ Upload an Image
-                <input type="file" name="image" accept="image/*" required />
-            </label>
-            
-            <button type="submit" class="submit-button">🚀 Generate Listing</button>
-        </form>
-
-        <footer>
-            <p class="footer-note">Built with 💡 by PriceAndPost</p>
-        </footer>
+      <form action="/upload" method="post" enctype="multipart/form-data">
+        <div class="input-group">
+          <label for="fileInput" class="upload-btn">
+            <span>📷 Snap or Upload</span>
+            <input
+              type="file"
+              id="fileInput"
+              name="file"
+              accept="image/*"
+              capture="environment"
+              required
+            />
+          </label>
+        </div>
+        <button type="submit" class="generate-btn">Generate Listing</button>
+      </form>
     </div>
+  </main>
 </body>
 </html>
